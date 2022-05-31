@@ -1,0 +1,10 @@
+NODE       = node
+NPM        = npm
+NRM        = nrm#npm is slow in mainland, use mirror
+
+$(NRM):
+	npm install -g nrm
+	git clone
+	npm i
+	npm i v-charts echarts@4.9.0 -S 
+	npm start

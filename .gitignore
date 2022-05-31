@@ -1,0 +1,30 @@
+# Byte-compiled
+__pycache__/                                                                                    
+# C extensions
+*.so
+
+# Distribution / packaging
+/*.egg-info/
+
+# Log file
+log/
+nohup.out
+*.log
+
+# JupyterLab
+.ipynb_checkpoints/
+
+# VScode
+.vscode/
+
+# redis snapshot
+dump.rdb
+
+# docker containers' data volume
+_data/
+
+# vendor
+vendor/
+
+# bin file
+bin/

@@ -1,0 +1,162 @@
+<!--
+    THIS EXAMPLE WAS DOWNLOADED FROM https://echarts.apache.org/examples/zh/editor.html?c=dynamic-data2
+-->
+<!DOCTYPE html>
+<html style="height: 100%">
+
+<head>
+  <meta charset="utf-8">
+</head>
+
+<body style="height: 100%; margin: 0">
+  <div id="container" style="height: 100%"></div>
+
+  <script crossorigin="anonymous" integrity="sha512-weWXHm0Ws2cZKjjwugRMnnOAx9uCP/wUVf84W7/fXQimwYUK28zPDGPprDozomQLpKv6U99xN9PI9+yLI9qxNw==" src="https://lib.baomitu.com/echarts/5.3.2-rc.1/echarts.min.js"></script>
+  <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.3.2/dist/echarts.min.js"></script> -->
+  <!-- Uncomment this line if you want to dataTool extension
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.3.2/dist/extension/dataTool.min.js"></script>
+        -->
+  <!-- Uncomment this line if you want to use gl extension
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl@2/dist/echarts-gl.min.js"></script>
+        -->
+  <!-- Uncomment this line if you want to echarts-stat extension
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat@latest/dist/ecStat.min.js"></script>
+        -->
+  <!-- Uncomment this line if you want to use map
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.3.2/map/js/china.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.3.2/map/js/world.js"></script>
+        -->
+  <!-- Uncomment these two lines if you want to use bmap extension
+        <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=<Your Key Here>"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@<version>/dist/extension/bmap.min.js"></script>
+        -->
+
+  <script type="text/javascript">
+    var dom = document.getElementById("container");
+    // var myChart = echarts.init(dom, 'dark'); // dark mode
+    var myChart = echarts.init(dom);
+    var app = {};
+    var option;
+    let data = [];
+    // TODO init some data
+
+    option = {
+      title: {
+        left: 'center', // title position
+        text: "\n{{ .title }}"
+      },
+      toolbox: {
+        feature: {
+          dataZoom: {
+            yAxisIndex: 'none'
+          },
+          restore: {},
+          saveAsImage: {}
+        }
+      },
+      tooltip: {
+        trigger: 'axis',
+        formatter: function (params) {
+          params = params[0];
+          var date = new Date(params.value[0]);
+          return (
+            'TIME: ' +
+            date.getHours() +
+            ':' +
+            date.getMinutes() +
+            ':' +
+            date.getSeconds() +
+            ' VALUE: ' +
+            params.value[1]
+          );
+        },
+        axisPointer: {
+          animation: false
+        }
+      },
+      xAxis: {
+        type: 'time',
+        splitLine: {
+          show: true
+        }
+      },
+      yAxis: {
+        type: 'value',
+        boundaryGap: [0, '100%'],
+        splitLine: {
+          show: true
+        },
+        scale: true
+      },
+      dataZoom: [
+        {
+          type: 'inside',
+          start: 0,
+          end: 100
+        },
+        {
+          start: 0,
+          end: 100
+        }
+      ],
+      series: [
+        {
+          name: 'Fake Data',
+          type: 'line',
+          smooth: true,
+          showSymbol: false,
+          // areaStyle: {}, // show area below line
+          data: data,
+          animation: false,
+          markPoint: {
+            data: [
+              { type: 'max', name: 'Max' },
+              { type: 'min', name: 'Min' }
+            ],
+            symbol: "pin"
+          },
+          markLine: {
+            data: [{ type: 'average', name: 'Avg' }]
+          }
+        }
+      ]
+    };
+
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+    // get data below
+    var ws = new WebSocket("{{ .url }}", "{{ .token }}"); // set sec-websocket-protocol
+    ws.onopen = function () {
+      console.log("Status: Connected\n")
+    };
+    ws.onmessage = function (e) {
+      console.log(e)
+      var resp = JSON.parse(e.data)
+      if (data.length > 100) { // TODO config
+        data.shift();
+      }
+      data.push({
+        name: resp["cpu"],
+        value: [
+          resp["time"],
+          resp["percent"]
+        ]
+      });
+      myChart.setOption({
+        series: [
+          {
+            data: data
+          }
+        ]
+      });
+    };
+    ws.onclose = function (e) {
+      console.log('Connection closed\n');
+    };
+
+  </script>
+</body>
+
+</html>

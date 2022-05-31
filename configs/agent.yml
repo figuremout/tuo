@@ -1,0 +1,31 @@
+influxdb:
+  url: "http://127.0.0.1:8086"
+  token: "init-token"
+  organization: "init-org"
+  bucket: "init-bucket"
+
+log:
+  # Log output controls the destination for logs and can be one of "stderr", "stdout" or path of log file,
+  # when set to empty string default stderr will be used
+  logoutput: "stdout"
+
+  #rotation:
+      # The logfile will be rotated when it becomes larger than the specified size
+      # Size unit like "B/KB/KiB/MB/MiB/GB/GiB"
+      # When set to 0 no size based rotation is performed
+      #rotation_max_size: "10B"
+
+      # The logfile will be rotated after the time interval specified.  When set
+      # to 0 no time based rotation is performed. Logs are rotated only when
+      # written to, if there is no log activity rotation may be delayed.
+      # Interval unit must be one of "ns", "us", "ms", "s", "m", "h"
+      #rotation_interval: "2s"
+
+      # Maximum number of rotated archives to keep, any older logs are deleted.
+      # If set to 0, no archives are removed.
+      #rotation_max_archives: 3
+
+
+collector:
+  # Default data collection interval for all metrics
+  interval: "11s"

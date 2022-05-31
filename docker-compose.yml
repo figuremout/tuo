@@ -1,0 +1,82 @@
+version: "3.9"
+services:
+#  dashboard:
+#agent:
+#    depends_on:
+#      - mysql
+#      - redis
+#      - influxdb
+
+
+#  ray:
+
+  # enter repl in docker: mysql -uroot  -p
+  mysql:
+    image: "mysql:8.0-oracle"
+    # restart: always # restart with docker engine
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "tuo-mysql"
+      MYSQL_DATABASE: "tuo" # create database on image startup, otherwise pymysql cannot connect to it
+#TZ: "Asia/Shanghai" # set time zone
+    # volumes:
+    #   - "./_data/mysql/:/var/lib/mysql/:rw"
+    #   - "./_log/mysql/:/var/log/mysql/:rw"
+    #   - "./conf/mysql/:/etc/mysql/conf.d/:ro"
+    command: --default-authentication-plugin=mysql_native_password
+
+  # redis:
+  #   image: "redis:6.2.6-alpine"
+  #   # restart: always
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - "./_data/redis/:/data:rw"
+  #     - "./conf/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro"
+  #   command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]  # specify conf
+  #   environment:
+  #     TZ: "Asia/Shanghai" # set time zone
+
+  influxdb:
+    image: "influxdb:2.1.1" # influx cli cannot enter interactive shell after influxdb2.x
+    # restart: always
+    ports:
+      - "8086:8086"
+    #volumes:
+      #- "./_data/influxdb/:/var/lib/influxdb2:rw"
+      #- "./conf/influxdb/config.yml:/etc/influxdb2/config.yml:ro"
+    environment:
+      TZ: "Asia/Shanghai" # set time zone
+      DOCKER_INFLUXDB_INIT_MODE: "setup" # automated setup
+      DOCKER_INFLUXDB_INIT_USERNAME: "init-user"
+      DOCKER_INFLUXDB_INIT_PASSWORD: "init-pass"
+      DOCKER_INFLUXDB_INIT_ORG: "init-org"
+      DOCKER_INFLUXDB_INIT_BUCKET: "init-bucket"
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: "init-token"
+    networks:
+      - influxdb
+
+  # telegraf:
+  #   image: "telegraf"
+  #   volumes:
+  #     - "./telegraf.conf:/etc/telegraf/telegraf.conf:ro"
+  #   networks:
+  #     - influxdb
+
+
+networks:
+  influxdb:
+
+#  grafana:
+#    build: 
+#      context: ./
+#      dockerfile: Dockerfile.grafana
+#    image: "zockerhub/grafana-oss:8.3.4"
+#    ports:
+#      - "3000:3000"
+#    volumes:
+#      - "./_data/grafana/:/var/lib/grafana:rw"
+#      - "./log/grafana/:/var/log/grafana/:rw"
+#    user: "472:0"
+
