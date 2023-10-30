@@ -3,7 +3,7 @@
 # cmd
 GO         = go
 GOFMT      = gofmt
-GOBUILD    = $(GO) build #-race
+GOBUILD    = $(GO) build#-race
 GOMOD      = $(GO) mod
 GOTEST     = $(GO) test
 GORUN      = $(GO) run #-race
@@ -83,7 +83,7 @@ clean:
 	rm -rf $(BINS)
 
 .PHONY: prepare
-prepare: 
+prepare:
 	echo $(PROTOCOUT)
 
 
